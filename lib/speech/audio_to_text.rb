@@ -34,6 +34,7 @@ module Speech
       while retrying
         #easy.verbose = true
         easy.headers['Content-Type'] = "audio/x-flac; rate=#{chunk.flac_rate}"
+        easy.headers['User-Agent'] = "https://github.com/taf2/speech2text"
         easy.post_body = "Content=#{chunk.to_flac_bytes}"
         easy.on_progress {|dl_total, dl_now, ul_total, ul_now| printf("%.2f/%.2f\r", ul_now, ul_total); true }
         easy.on_complete {|easy| puts }
