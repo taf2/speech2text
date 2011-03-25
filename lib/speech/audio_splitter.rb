@@ -9,7 +9,7 @@ module Speech
 
       def initialize(splitter, offset, duration)
         self.offset = offset
-        self.chunk = "chunk-" + splitter.original_file.gsub(/\.(.*)$/, "-#{offset}" + '.\1') 
+        self.chunk = File.join(File.dirname(splitter.original_file), "chunk-" + File.basename(splitter.original_file).gsub(/\.(.*)$/, "-#{offset}" + '.\1'))
         self.duration = duration
         self.splitter = splitter
       end
