@@ -18,6 +18,6 @@ It also appears that the API only likes smaller audio files so there is a built 
 
 == Command Line
 
-  speech2text i-like-pickles.wav
-  cat i-like-pickles.json
-  {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
+ speech2text i-like-pickles.wav
+ cat i-like-pickles.json
+ {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
