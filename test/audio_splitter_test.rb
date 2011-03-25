@@ -6,7 +6,7 @@ require 'speech'
 class SpeechAudioSplitterTest < Test::Unit::TestCase
 
   def test_audio_splitter
-    splitter = Speech::AudioSplitter.new("i-like-pickles.wav", 1)
+    splitter = Speech::AudioSplitter.new("samples/i-like-pickles.wav", 1)
 
     assert_equal '00:00:03:52', splitter.duration.to_s
     assert_equal 3.52, splitter.duration.to_f
