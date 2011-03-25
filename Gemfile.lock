@@ -1,0 +1,12 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    curb (0.7.15)
+    json (1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  curb
+  json

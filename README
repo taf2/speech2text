@@ -1,0 +1,10 @@
+== Speech2Text
+
+Using the power of ffmpeg/flac/Google and ruby here is a simple interface to play with to convert speech to text.
+
+At this point the API from Google is not documented and seemly free.
+The Google API will frequently return 500 errors without providing much reason as to why.
+
+It's possible that Google will decide to not open this API up and this effort my completely be for not...
+
+This was all made possible in short order all thanks to Chrome 11 and http://mikepultz.com/2011/03/accessing-google-speech-api-chrome-11/
