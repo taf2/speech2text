@@ -2,9 +2,16 @@
 
 Using the power of ffmpeg/flac/Google and ruby here is a simple interface to play with to convert speech to text.
 
-At this point the API from Google is not documented and seemly free.
-The Google API will frequently return 500 errors without providing much reason as to why.
+Using a new undocumentd speech API from Google with the help of this article: http://mikepultz.com/2011/03/accessing-google-speech-api-chrome-11/
 
-It's possible that Google will decide to not open this API up and this effort my completely be for not...
+We're able to provide a very simple API in Ruby to decode simple audio to text.
 
-This was all made possible in short order all thanks to Chrome 11 and http://mikepultz.com/2011/03/accessing-google-speech-api-chrome-11/
+The API from Google is not yet public and so may change. It also seems to be very fragile as more times than not it will return a 500, so the library has retry code built in - for larger audio files 10+ failures may return before a successful result is retrieved...
+
+It also appears that the API only likes smaller audio files so there is a built in chunker that allows us to split the audio up into smaller chunks.
+
+== Example
+
+    audio = Speech::AudioToText.new("i-like-pickles.wav")
+    puts audio.to_text.inspect
+    => {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
