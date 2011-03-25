@@ -1,6 +1,6 @@
 # -*- encoding: binary -*-
 module Speech
   class Info
-    VERSION='0.02'
+    VERSION='0.0.2'
   end
 end
