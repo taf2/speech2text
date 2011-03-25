@@ -1,4 +1,4 @@
-== Speech2Text
+= Speech2Text
 
 Using the power of ffmpeg/flac/Google and ruby here is a simple interface to play with to convert speech to text.
 
@@ -12,6 +12,12 @@ It also appears that the API only likes smaller audio files so there is a built 
 
 == Example
 
-    audio = Speech::AudioToText.new("i-like-pickles.wav")
-    puts audio.to_text.inspect
-    => {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
+ audio = Speech::AudioToText.new("i-like-pickles.wav")
+ puts audio.to_text.inspect
+ => {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
+
+== Command Line
+
+  speech2text i-like-pickles.wav
+  cat i-like-pickles.json
+  {"captured_json"=>[["I like pickles", 0.92731786]], "confidence"=>0.92731786}
