@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.summary  = "Speech to Text Library"
   s.description = "Super powers of Google wrapped in a nice Ruby interface"
   s.files = Dir["{lib,bin,test}/**/*", "Rakefile", "README.rdoc", "*.gemspec"]
+  spec.executables    = %w(speech2text)
 
   s.add_dependency "curb"
   s.add_dependency "json"
