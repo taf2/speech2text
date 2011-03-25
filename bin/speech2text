@@ -1,2 +1,7 @@
 #!/this/will/be/replaced/by/rubygems
 # -*- encoding: binary -*-
+
+require 'speech'
+
+captured_json = Speech::AudioToText.new(ARGV[0]).to_text
+puts captured_json.inspect

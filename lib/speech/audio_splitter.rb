@@ -1,3 +1,4 @@
+# -*- encoding: binary -*-
 module Speech
 
   class AudioSplitter
