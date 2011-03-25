@@ -21,6 +21,10 @@ module Speech
       JSON.parse(File.read(self.captured_file))
     end
 
+    def clean
+      File.unlink self.captured_file if self.captured_file && File.exist?(self.captured_file)
+    end
+
   protected
 
     def convert_chunk(easy, chunk, options={})
