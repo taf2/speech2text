@@ -12,7 +12,7 @@ module Speech
     end
 
     def to_text
-      url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=speech2text&lang=en-US"
+      url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=speech2text&lang=en-US&maxresults=1"
       splitter = Speech::AudioSplitter.new(file) # based off the wave file because flac doesn't tell us the duration
       easy = Curl::Easy.new(url)
       splitter.split.each do|chunk|
@@ -48,7 +48,9 @@ module Speech
         else
           # {"status":0,"id":"ce178ea89f8b17d8e8298c9c7814700a-1","hypotheses":[{"utterance":"I like pickles","confidence":0.92731786}]}
           data = JSON.parse(easy.body_str)
+          puts data.inspect
           data['hypotheses'].each {|utterance|
+            puts utterance.inspect
             self.captured_json << [utterance['utterance'], utterance['confidence']]
             self.confidence += utterance['confidence']
           }
