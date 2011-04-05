@@ -23,14 +23,24 @@ module Speech
       end
 
       def self.from_seconds(seconds)
+#        puts "total seconds: #{seconds.inspect}"
         duration = Duration.new("00:00:00.00")
         duration.hours = (seconds.to_i / 3600).to_i
-        duration.minutes = (seconds / 60).to_i
-        duration.seconds = (seconds - (duration.minutes*60) - (duration.hours*3600)).to_s
+#        puts "hours: #{duration.hours.inspect}"
+        duration.minutes = ((seconds.to_i - (duration.hours*3600)) / 60).to_i
+#        puts "minutes: #{duration.minutes.inspect}"
+        secs = (seconds - (duration.minutes*60) - (duration.hours*3600))
+        duration.seconds = sprintf("%.2f", secs)
+#        puts "seconds: #{duration.seconds.inspect}"
         duration.hours = duration.hours.to_s
         duration.minutes = duration.minutes.to_s
 
         duration
+      end
+
+      def +(b)
+        self.to_f + b.to_f
+        Duration.from_seconds(self.to_f + b.to_f)
       end
 
     end
@@ -39,5 +49,29 @@ module Speech
       self.duration = Duration.new(`ffmpeg -i #{file} 2>&1`.strip.scan(/Duration: (.*),/).first.first)
     end
 
+  end
+end
+
+if $0 == __FILE__
+  require 'test/unit'
+
+  class QuickTest < Test::Unit::TestCase
+
+    def test_add_duration
+      a = Speech::AudioInspector::Duration.new("00:00:12.12")
+      b = Speech::AudioInspector::Duration.new("00:00:02.00")
+
+      assert "00:00:14.12", (a + b).to_s
+
+      a = Speech::AudioInspector::Duration.new("00:10:12.12")
+      b = Speech::AudioInspector::Duration.new("08:00:02.00")
+
+      assert "08:10:14:12", (a + b).to_s
+
+      a = Speech::AudioInspector::Duration.new("02:10:12.12")
+      b = Speech::AudioInspector::Duration.new("08:55:02.10")
+
+      assert "11:05:14:22", (a + b).to_s
+    end
   end
 end
