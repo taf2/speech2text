@@ -19,7 +19,7 @@ module Speech
       end
 
       def to_f
-        self.total_seconds
+        (self.hours.to_i * 3600) + (self.minutes.to_i * 60) + self.seconds.to_f
       end
 
       def self.from_seconds(seconds)
@@ -39,7 +39,8 @@ module Speech
       end
 
       def +(b)
-        self.to_f + b.to_f
+        total = self.to_f + b.to_f
+#        puts "total: #{self.to_f} + #{b.to_f} = #{total.inspect}"
         Duration.from_seconds(self.to_f + b.to_f)
       end
 
@@ -61,17 +62,35 @@ if $0 == __FILE__
       a = Speech::AudioInspector::Duration.new("00:00:12.12")
       b = Speech::AudioInspector::Duration.new("00:00:02.00")
 
-      assert "00:00:14.12", (a + b).to_s
+      assert_equal "00:00:14:12", (a + b).to_s
 
       a = Speech::AudioInspector::Duration.new("00:10:12.12")
       b = Speech::AudioInspector::Duration.new("08:00:02.00")
 
-      assert "08:10:14:12", (a + b).to_s
+      assert_equal "08:10:14:12", (a + b).to_s
 
       a = Speech::AudioInspector::Duration.new("02:10:12.12")
       b = Speech::AudioInspector::Duration.new("08:55:02.10")
 
-      assert "11:05:14:22", (a + b).to_s
+      assert_equal "11:05:14:22", (a + b).to_s
+
+      a = Speech::AudioInspector::Duration.new("00:00:12.12")
+      b = Speech::AudioInspector::Duration.new("00:00:02.00")
+
+      a = a + b
+      assert_equal "00:00:14:12", a.to_s
+      puts a.inspect
+
+      a = a + b
+      puts a.inspect
+
+      assert_equal "00:00:16:12", a.to_s
+
+      a = a + b
+      puts a.to_s
+      assert_equal "00:00:18:12", a.to_s
+      puts a.to_s
     end
+
   end
 end
