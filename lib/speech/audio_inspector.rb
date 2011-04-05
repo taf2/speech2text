@@ -14,7 +14,7 @@ module Speech
 
       def to_s
         s,f = seconds.split('.')
-        sprintf "%.2d:%.2d:%.2d:%.2d", self.hours.to_s.gsub(/^0/,'').to_i, self.minutes.to_s.gsub(/^0/,'').to_i, s.to_s.gsub(/^0/,'').to_i, (f||0)
+        sprintf "%.2d:%.2d:%.2d:%.2d", self.hours.to_i, self.minutes.to_i, s.to_i, (f||0).to_i
         #"#{hours}:#{minutes}:#{seconds}:#{f}"
       end
 

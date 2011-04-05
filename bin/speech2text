@@ -3,5 +3,10 @@
 
 require 'speech'
 
+if ARGV[0].nil? || !File.exist?(ARGV[0])
+  STDERR.puts "usage: #{$0} input.wav"
+  exit(1)
+end
+
 captured_json = Speech::AudioToText.new(ARGV[0]).to_text
 puts captured_json.inspect

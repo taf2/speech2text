@@ -5,22 +5,33 @@ module Speech
     attr_accessor :original_file, :size, :duration, :chunks
 
     class AudioChunk
-      attr_accessor :splitter, :chunk, :flac_chunk, :offset, :duration, :flac_rate
+      attr_accessor :splitter, :chunk, :flac_chunk, :offset, :duration, :flac_rate, :copied
 
       def initialize(splitter, offset, duration)
         self.offset = offset
         self.chunk = File.join(File.dirname(splitter.original_file), "chunk-" + File.basename(splitter.original_file).gsub(/\.(.*)$/, "-#{offset}" + '.\1'))
         self.duration = duration
         self.splitter = splitter
+        self.copied = false
+      end
+
+      def self.copy(splitter)
+        chunk = AudioChunk.new(splitter, 0, splitter.duration.to_f)
+        chunk.copied = true
+        system("cp #{splitter.original_file} #{chunk.chunk}")
+        chunk
       end
 
       # given the original file from the splitter and the chunked file name with duration and offset run the ffmpeg command
       def build
+        return self if self.copied
         # ffmpeg -y -i sample.audio.wav -acodec copy -vcodec copy -ss 00:00:00:00 -t 00:00:30:00 sample.audio.out.wav
         offset_ts = AudioInspector::Duration.from_seconds(self.offset)
         duration_ts = AudioInspector::Duration.from_seconds(self.duration)
+        # NOTE: kind of a hack, but if the original source is less than or equal to 1 second, we should skip ffmpeg
+        puts "building chunk: #{duration_ts.inspect} and offset: #{offset_ts}"
         #puts "offset: #{ offset_ts.to_s }, duration: #{duration_ts.to_s}"
-        cmd = "ffmpeg -y -i #{splitter.original_file} -acodec copy -vcodec copy -ss #{offset_ts} -t #{duration_ts} #{self.chunk} >/dev/null 2>&1"
+        cmd = "ffmpeg -y -i #{splitter.original_file} -acodec copy -vcodec copy -ss #{offset_ts} -t #{duration_ts} #{self.chunk}"# >/dev/null 2>&1"
         if system(cmd)
           self
         else
@@ -30,7 +41,9 @@ module Speech
 
       # convert the audio file to flac format
       def to_flac
-        if system("flac #{chunk} >/dev/null 2>&1")
+        puts "convert: #{chunk} to flac"
+        if system("flac #{chunk}")
+          puts "success?"
           self.flac_chunk = chunk.gsub(File.extname(chunk), ".flac")
           # convert the audio file to 16K
           self.flac_rate = `ffmpeg -i #{self.flac_chunk} 2>&1`.strip.scan(/Audio: flac, (.*) Hz/).first.first.strip
@@ -42,6 +55,8 @@ module Speech
             raise "failed to convert to lower audio rate"
           end
 
+        else
+          raise "failed to convert chunk: #{chunk} with flac #{chunk}"
         end
       end
 
@@ -75,10 +90,11 @@ module Speech
       end
 
       if chunks.empty?
-        chunks << AudioChunk.new(self, 0, self.duration.to_f)
+        chunks << AudioChunk.copy(self)#, 0, self.duration.to_f)
       else
         chunks << AudioChunk.new(self, chunks.last.offset.to_i + chunks.last.duration.to_i, self.size + last_chunk)
       end
+      puts "Chunk count: #{chunks.size}"
 
       chunks
     end
