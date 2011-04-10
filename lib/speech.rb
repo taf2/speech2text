@@ -1,4 +1,5 @@
 # -*- encoding: binary -*-
+require 'rubygems'
 require 'curb'
 require 'json'
 
