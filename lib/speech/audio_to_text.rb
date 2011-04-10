@@ -31,7 +31,7 @@ module Speech
       puts "sending chunk of size #{chunk.duration}..."
       retrying = true
       retry_count = 0
-      while retrying && retry_count < 5
+      while retrying && retry_count < 3 # 3 retries
         #easy.verbose = true
         easy.headers['Content-Type'] = "audio/x-flac; rate=#{chunk.flac_rate}"
         easy.headers['User-Agent'] = "https://github.com/taf2/speech2text"
