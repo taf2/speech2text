@@ -33,8 +33,8 @@ class SpeechAudioToTextTest < Test::Unit::TestCase
     assert captured_json.keys.include?('id')
     assert captured_json.keys.include?('hypotheses')
     puts captured_json.inspect
-    assert_equal "eagles", captured_json['hypotheses'][0].first
-    assert_equal "pickles", captured_json['hypotheses'][1].first
+    assert_equal "eagles eagles eagles", captured_json['hypotheses'][0].first
+    assert_equal "pickles pickles pickles", captured_json['hypotheses'][1].first
     #assert captured_json['confidence'] > 0.9
   ensure
     audio.clean
