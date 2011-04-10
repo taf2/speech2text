@@ -53,7 +53,7 @@ module Speech
           self.captured_json['status'] = data['status']
           self.captured_json['id'] = data['id']
           self.captured_json['hypotheses'] = data['hypotheses'].map {|ut| [ut['utterance'], ut['confidence']] } 
-          puts self.captured_json.inspect
+          puts "inspect: #{self.captured_json.inspect}"
           File.open("#{self.captured_file}", "wb") {|f| f << captured_json.to_json }
           retrying = false
         end
