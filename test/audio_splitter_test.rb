@@ -8,8 +8,8 @@ class SpeechAudioSplitterTest < Test::Unit::TestCase
   def test_audio_splitter
     splitter = Speech::AudioSplitter.new("test/samples/i-like-pickles.wav", 1)
 
-    assert_equal '00:00:03:52', splitter.duration.to_s
-    assert_equal 3.52, splitter.duration.to_f
+    assert_equal '00:00:03:51', splitter.duration.to_s
+    assert_equal 3.51, splitter.duration.to_f
 
     chunks = splitter.split
     assert_equal 3, chunks.size
