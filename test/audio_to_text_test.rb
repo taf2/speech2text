@@ -6,7 +6,7 @@ require 'speech'
 class SpeechAudioToTextTest < Test::Unit::TestCase
   def test_audio_to_text
     audio = Speech::AudioToText.new("test/samples/i-like-pickles.wav")
-    captured_json = audio.to_text
+    captured_json = audio.to_text.first
     assert captured_json
     assert captured_json.key?("hypotheses")
     assert !captured_json['hypotheses'].empty?
@@ -24,7 +24,7 @@ class SpeechAudioToTextTest < Test::Unit::TestCase
 
   def test_short_audio_clip
     audio = Speech::AudioToText.new("samples/i-like-pickles.chunk5.wav")
-    captured_json = audio.to_text
+    captured_json = audio.to_text.first
     assert captured_json
     assert captured_json.key?("hypotheses")
     assert !captured_json['hypotheses'].empty?

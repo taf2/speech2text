@@ -14,11 +14,14 @@ module Speech
       url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=speech2text&lang=en-US&maxresults=10"
       splitter = Speech::AudioSplitter.new(file, 3) # based off the wave file because flac doesn't tell us the duration
       easy = Curl::Easy.new(url)
+      result = []
       splitter.split.each do|chunk|
         chunk.build.to_flac
         convert_chunk(easy, chunk)
+	json = JSON.parse(File.read(self.captured_file))
+	result << json
       end
-      JSON.parse(File.read(self.captured_file))
+      result
     end
 
     def clean
