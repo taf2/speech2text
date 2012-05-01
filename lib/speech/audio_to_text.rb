@@ -12,13 +12,16 @@ module Speech
 
     def to_text
       url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=speech2text&lang=en-US&maxresults=10"
-      splitter = Speech::AudioSplitter.new(file) # based off the wave file because flac doesn't tell us the duration
+      splitter = Speech::AudioSplitter.new(file, 3) # based off the wave file because flac doesn't tell us the duration
       easy = Curl::Easy.new(url)
+      result = []
       splitter.split.each do|chunk|
         chunk.build.to_flac
         convert_chunk(easy, chunk)
+	json = JSON.parse(File.read(self.captured_file))
+	result << json
       end
-      JSON.parse(File.read(self.captured_file))
+      result
     end
 
     def clean
@@ -53,7 +56,7 @@ module Speech
           self.captured_json['status'] = data['status']
           self.captured_json['id'] = data['id']
           self.captured_json['hypotheses'] = data['hypotheses'].map {|ut| [ut['utterance'], ut['confidence']] } 
-          puts self.captured_json.inspect
+          puts "inspect: #{self.captured_json.inspect}"
           File.open("#{self.captured_file}", "wb") {|f| f << captured_json.to_json }
           retrying = false
         end

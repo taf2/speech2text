@@ -5,8 +5,8 @@ require 'speech'
 
 class SpeechAudioToTextTest < Test::Unit::TestCase
   def test_audio_to_text
-    audio = Speech::AudioToText.new("samples/i-like-pickles.wav")
-    captured_json = audio.to_text
+    audio = Speech::AudioToText.new("test/samples/i-like-pickles.wav")
+    captured_json = audio.to_text.first
     assert captured_json
     assert captured_json.key?("hypotheses")
     assert !captured_json['hypotheses'].empty?
@@ -24,7 +24,7 @@ class SpeechAudioToTextTest < Test::Unit::TestCase
 
   def test_short_audio_clip
     audio = Speech::AudioToText.new("samples/i-like-pickles.chunk5.wav")
-    captured_json = audio.to_text
+    captured_json = audio.to_text.first
     assert captured_json
     assert captured_json.key?("hypotheses")
     assert !captured_json['hypotheses'].empty?
@@ -33,8 +33,8 @@ class SpeechAudioToTextTest < Test::Unit::TestCase
     assert captured_json.keys.include?('id')
     assert captured_json.keys.include?('hypotheses')
     puts captured_json.inspect
-    assert_equal "eagles", captured_json['hypotheses'][0].first
-    assert_equal "pickles", captured_json['hypotheses'][1].first
+    assert_equal "eagles eagles eagles", captured_json['hypotheses'][0].first
+    assert_equal "pickles pickles pickles", captured_json['hypotheses'][1].first
     #assert captured_json['confidence'] > 0.9
   ensure
     audio.clean
