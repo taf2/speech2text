@@ -14,7 +14,7 @@ module Speech
 
       def to_s
         s,f = seconds.split('.')
-        sprintf "%.2d:%.2d:%.2d:%.2d", self.hours.to_i, self.minutes.to_i, s.to_i, (f||0).to_i
+        sprintf "%.2d:%.2d:%.2d.%.2d", self.hours.to_i, self.minutes.to_i, s.to_i, (f||0).to_i
         #"#{hours}:#{minutes}:#{seconds}:#{f}"
       end
 
@@ -47,7 +47,13 @@ module Speech
     end
 
     def initialize(file)
-      self.duration = Duration.new(`ffmpeg -i #{file} 2>&1`.strip.scan(/Duration: (.*),/).first.first)
+      out = `ffmpeg -i #{file} 2>&1`.strip
+      if out.match(/No such file or directory/)
+        raise "No such file or directory: #{file}"
+      else
+        out = out.scan(/Duration: (.*),/)
+        self.duration = Duration.new(out.first.first)
+      end
     end
 
   end

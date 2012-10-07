@@ -25,13 +25,13 @@ module Speech
       # given the original file from the splitter and the chunked file name with duration and offset run the ffmpeg command
       def build
         return self if self.copied
-        # ffmpeg -y -i sample.audio.wav -acodec copy -vcodec copy -ss 00:00:00:00 -t 00:00:30:00 sample.audio.out.wav
-        offset_ts = AudioInspector::Duration.from_seconds(self.offset)
-        duration_ts = AudioInspector::Duration.from_seconds(self.duration)
+        # ffmpeg -y -i sample.audio.wav -acodec copy -vcodec copy -ss 00:00:00.00 -t 00:00:30.00 sample.audio.out.wav
+        offset_ts = AudioInspector::Duration.from_seconds(self.offset).to_s
+        duration_ts = AudioInspector::Duration.from_seconds(self.duration).to_s
         # NOTE: kind of a hack, but if the original source is less than or equal to 1 second, we should skip ffmpeg
-        puts "building chunk: #{duration_ts.inspect} and offset: #{offset_ts}"
+        #puts "building chunk: #{duration_ts.inspect} and offset: #{offset_ts}"
         #puts "offset: #{ offset_ts.to_s }, duration: #{duration_ts.to_s}"
-        cmd = "ffmpeg -y -i #{splitter.original_file} -acodec copy -vcodec copy -ss #{offset_ts} -t #{duration_ts} #{self.chunk}"# >/dev/null 2>&1"
+        cmd = "ffmpeg -y -i #{splitter.original_file} -acodec copy -vcodec copy -ss #{offset_ts} -t #{duration_ts} #{self.chunk}   >/dev/null 2>&1"
         if system(cmd)
           self
         else
@@ -41,10 +41,8 @@ module Speech
 
       # convert the audio file to flac format
       def to_flac
-        puts "convert: #{chunk} to flac"
         chunk_outputfile = chunk.gsub(/#{File.extname(chunk)}$/, ".flac")
-        if system("ffmpeg -i #{chunk} -acodec flac #{chunk_outputfile}")
-          puts "success?"
+        if system("ffmpeg -i #{chunk} -acodec flac #{chunk_outputfile} >/dev/null 2>&1")
           self.flac_chunk = chunk.gsub(/#{File.extname(chunk)}$/, ".flac")
           # convert the audio file to 16K
           self.flac_rate = `ffmpeg -i #{self.flac_chunk} 2>&1`.strip.scan(/Audio: flac, (.*) Hz/).first.first.strip
@@ -73,7 +71,7 @@ module Speech
 
     end
 
-    def initialize(file, chunk_size=30)
+    def initialize(file, chunk_size=5)
       self.original_file = file
       self.duration = AudioInspector.new(file).duration
       self.size = chunk_size
@@ -87,7 +85,13 @@ module Speech
       #puts "generate: #{full_chunks} chunks of #{size} seconds, last: #{last_chunk} seconds"
 
       (full_chunks-1).times do|chunkid|
-        chunks << AudioChunk.new(self, chunkid * self.size, self.size)
+        if chunkid > 0
+          chunks << AudioChunk.new(self, chunkid * self.size, self.size)
+        else
+          off = (chunkid * self.size)-(self.size/2)
+          off = 0 if off < 0
+          chunks << AudioChunk.new(self, off, self.size)
+        end
       end
 
       if chunks.empty?
@@ -95,7 +99,7 @@ module Speech
       else
         chunks << AudioChunk.new(self, chunks.last.offset.to_i + chunks.last.duration.to_i, self.size + last_chunk)
       end
-      puts "Chunk count: #{chunks.size}"
+      #puts "Chunk count: #{chunks.size}"
 
       chunks
     end
