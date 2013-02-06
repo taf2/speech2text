@@ -10,7 +10,29 @@ The API from Google is not yet public and so may change. It also seems to be ver
 
 It also appears that the API only likes smaller audio files so there is a built in chunker that allows us to split the audio up into smaller chunks.
 
+== Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'speech2text'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install speech2text
+
+You must also install the ffmpeg utility on your local machine. If you are using OS X, the easiest way to do this is to install brew. You may need to instal XQuartz before installing ffmpeg:
+
+    $ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+    # You may be prompted to install XQuartz. Get it at https://xquartz.macosforge.org
+    $ brew install ffmpeg
+
 == Example
+
+ require 'speech'
 
  audio = Speech::AudioToText.new("i-like-pickles.wav")
  puts audio.to_text.inspect
