@@ -65,7 +65,7 @@ module Speech
           self.captured_json['status'] = data['status']
           self.captured_json['id'] = data['id']
           self.captured_json['hypotheses'] = data['hypotheses'].map {|ut| [ut['utterance'], ut['confidence']] } 
-          if data.key?('hypotheses') && data['hypotheses'].first
+          if data.key?('hypotheses') && !data['hypotheses'].nil? && data['hypotheses'].first
             self.best_match_text += " " + data['hypotheses'].first['utterance']
             self.score += data['hypotheses'].first['confidence']
             self.segments += 1
