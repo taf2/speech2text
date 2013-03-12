@@ -1,6 +1,8 @@
 # -*- encoding: binary -*-
+
 require 'curb'
 require 'json'
+require 'uuid'
 
 module Speech; end
 
