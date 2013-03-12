@@ -9,7 +9,7 @@ module Speech
 
       def initialize(splitter, offset, duration)
         self.offset = offset
-        self.chunk = File.join(File.dirname(splitter.original_file), "chunk-" + File.basename(splitter.original_file).gsub(/\.(.*)$/, "-#{offset}" + '.\1'))
+        self.chunk = File.join("/tmp/" + UUID.generate + "-chunk-" + File.basename(splitter.original_file).gsub(/\.(.*)$/, "-#{offset}" + '.\1'))
         self.duration = duration
         self.splitter = splitter
         self.copied = false
@@ -72,7 +72,7 @@ module Speech
     end
 
     def initialize(file, chunk_size=5)
-      self.original_file = file
+      self.original_file = file      
       self.duration = AudioInspector.new(file).duration
       self.size = chunk_size
       self.chunks = []
@@ -84,7 +84,7 @@ module Speech
       last_chunk = ((self.duration.to_f % size) * 100).round / 100.0
       #puts "generate: #{full_chunks} chunks of #{size} seconds, last: #{last_chunk} seconds"
 
-      (full_chunks-1).times do|chunkid|
+      (full_chunks-1).times do |chunkid|
         if chunkid > 0
           chunks << AudioChunk.new(self, chunkid * self.size, self.size)
         else

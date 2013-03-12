@@ -18,7 +18,7 @@ module Speech
 
     def to_text(max=2,lang="en-US")
       to_json(max,lang)
-      self.best_match_text
+      self.best_match_text if self.verbose
     end
 
     def to_json(max=2,lang="en-US")
@@ -39,7 +39,6 @@ module Speech
     end
 
   protected
-
     def convert_chunk(easy, chunk, options={})
       puts "sending chunk of size #{chunk.duration}..." if self.verbose
       retrying = true
@@ -52,7 +51,6 @@ module Speech
         if self.verbose
           easy.on_progress {|dl_total, dl_now, ul_total, ul_now| printf("%.2f/%.2f\r", ul_now, ul_total); true }
         end
-        easy.on_complete {|easy| puts }
         easy.http_post
         if easy.response_code == 500
           puts "500 from google retry after 0.5 seconds" if self.verbose
@@ -69,6 +67,7 @@ module Speech
             self.best_match_text += " " + data['hypotheses'].first['utterance']
             self.score += data['hypotheses'].first['confidence']
             self.segments += 1
+            puts data['hypotheses'].first['utterance']
           end
           retrying = false
         end
