@@ -18,7 +18,7 @@ module Speech
 
     def to_text(max=2,lang="en-US")
       to_json(max,lang)
-      self.best_match_text
+      self.best_match_text if self.verbose
     end
 
     def to_json(max=2,lang="en-US")

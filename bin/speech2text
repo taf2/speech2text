@@ -8,5 +8,4 @@ if ARGV[0].nil?
   exit(1)
 end
 
-captured_json = Speech::AudioToText.new(ARGV[0]).to_text
-puts captured_json.inspect
+Speech::AudioToText.new(ARGV[0]).to_text
