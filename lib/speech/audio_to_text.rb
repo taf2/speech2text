@@ -2,7 +2,7 @@
 module Speech
 
   class AudioToText
-    attr_accessor :file, :rate, :captured_json
+    attr_accessor :file, :rate, :captured_json, :api_key
     attr_accessor :best_match_text, :score, :verbose, :segments
 
     def initialize(file, options={})
@@ -12,6 +12,7 @@ module Speech
       self.best_match_text = ""
       self.score = 0.0
       self.segments = 0
+      self.api_key = "speech2text"
 
       self.verbose = !!options[:verbose] if options.key?(:verbose)
     end
@@ -26,7 +27,7 @@ module Speech
       self.score = 0.0
       self.segments = 0
 
-      url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=speech2text&lang=#{lang}&maxresults=#{max}"
+      url = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=#{api_key}&lang=#{lang}&maxresults=#{max}"
       splitter = Speech::AudioSplitter.new(file) # based off the wave file because flac doesn't tell us the duration
       easy = Curl::Easy.new(url)
       splitter.split.each do|chunk|
