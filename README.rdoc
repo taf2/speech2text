@@ -24,7 +24,7 @@ Or install it yourself as:
 
     $ gem install speech2text
 
-You must also install the ffmpeg utility on your local machine. If you are using OS X, the easiest way to do this is to install brew. You may need to instal XQuartz before installing ffmpeg:
+You must also install the ffmpeg utility on your local machine. If you are using OS X, the easiest way to do this is to install brew. You may need to install XQuartz before installing ffmpeg:
 
     $ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
     # You may be prompted to install XQuartz. Get it at https://xquartz.macosforge.org
